@@ -6,10 +6,12 @@ const connectDb = async () => {
     }
     try {
         mongoose.set("strictQuery", false);
-        await mongoose.connect(process.env.MONGO_URI);
+        await mongoose.connect(process.env.MONGO_URI, {
+            dbName: "BlogApp",
+        });
         console.log("Connected to Mongo DB");
-        connectAndActivate();
-        checkDatabaseExists();
+        // connectAndActivate();
+        // checkDatabaseExists();
     }
     catch (error) {
         console.log(error);
