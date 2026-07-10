@@ -5,7 +5,7 @@ export interface IUser extends Document {
   image: string;
   instagram: string;
   facebook: string;
-  likedin: string;
+  linkedin: string;
   bio: string;
 }
 const schema: Schema<IUser> = new Schema(
@@ -15,7 +15,7 @@ const schema: Schema<IUser> = new Schema(
     image: { type: String, required: true },
     instagram: String,
     facebook: String,
-    likedin: String,
+    linkedin: String,
     bio: String,
   },
   { timestamps: true }

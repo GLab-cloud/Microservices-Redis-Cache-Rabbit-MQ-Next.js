@@ -7,7 +7,7 @@ const app = express();
 app.use(express.json());
 connectDb();
 app.use("/api/v1", userRoutes);
-console.log(process.env.MONGO_URI);
+//console.log(process.env.MONGO_URI);
 const port = process.env.PORT;
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
