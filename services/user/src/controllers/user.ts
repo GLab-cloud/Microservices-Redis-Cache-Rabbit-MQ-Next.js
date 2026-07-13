@@ -1,4 +1,3 @@
-import { Request, Response } from "express";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 import TryCatch from "../utils/trycatch.js";
@@ -19,3 +18,11 @@ export const myProfile = TryCatch(async (req: AuthenticatedRequest, res) => {
   const user = req.user;
   res.json(user);
 });
+export const getUserProfile =TryCatch(async(req,res)=>{
+  const user= await User.findById(req.params.id)
+  if(!user){
+    res.status(404).json({message:"No user with this Id"}) 
+    return
+  }
+    res.json(user)
+})
