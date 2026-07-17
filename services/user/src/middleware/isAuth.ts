@@ -12,6 +12,7 @@ export const isAuth = async (
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      res.status(401).json({ message: "Please login" });
       return;
     }
     const token = authHeader.split(" ")[1];

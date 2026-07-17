@@ -18,7 +18,11 @@ export const loginUser = TryCatch(async (req, res) => {
 });
 
 export const myProfile = TryCatch(async (req: AuthenticatedRequest, res) => {
-  const user = req.user;
+  if (!req.user?.email) {
+    res.status(401).json({ message: "Please login" });
+    return;
+  }
+  const user = await User.findOne({ email: req.user.email });
   res.json(user);
 });
 export const getUserProfile = TryCatch(async (req, res) => {
