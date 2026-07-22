@@ -1,7 +1,7 @@
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 import TryCatch from "../utils/trycatch.js";
-import { AuthenticatedRequest } from "../middleware/isAuth.js";
+import { AuthenticatedRequest } from "../middlewares/isAuth.js";
 import getBuffer from "../utils/dataUri.js";
 import { v2 as cloudinary } from "cloudinary";
 

@@ -6,8 +6,8 @@ import {
   updateUser,
   updateProfilePic,
 } from "../controllers/user.js";
-import { isAuth } from "../middleware/isAuth.js";
-import uploadFile from "../middleware/multer.js";
+import { isAuth } from "../middlewares/isAuth.js";
+import uploadFile from "../middlewares/multer.js";
 const router = express.Router();
 router.post("/login", loginUser);
 router.get("/me", isAuth, myProfile);
