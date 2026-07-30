@@ -1,9 +1,10 @@
 import express  from "express";
 import uploadFile from "../middlewares/multer.js";
-import { createBlog, updateBlog } from "../controllers/blog.js";
+import { createBlog, deleteBlog, getAllBlogs, updateBlog } from "../controllers/blog.js";
 import { isAuth } from "../middlewares/isAuth.js";
 const router = express.Router();
 router.post("/blog/new", isAuth, uploadFile, createBlog);
 router.post("/blog/:id", isAuth, uploadFile, updateBlog);
-
+router.delete("/blog/:id", isAuth, deleteBlog);
+router.get("/blog/all", isAuth, getAllBlogs);
 export default router;

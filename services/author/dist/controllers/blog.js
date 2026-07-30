@@ -52,3 +52,21 @@ export const updateBlog = TryCatch(async (req, res) => {
     const updatedBlog = await sql `UPDATE blogs SET title=${title}, description=${description}, blogcontent=${blogcontent}, image=${imageUrl}, category=${category} WHERE id=${id} AND author=${req.user?._id} RETURNING *`;
     return res.status(200).json({ message: "Blog updated", blog: updatedBlog[0] });
 });
+export const deleteBlog = TryCatch(async (req, res) => {
+    const { id } = req.params;
+    const blog = await sql `SELECT * FROM blogs WHERE id=${id} AND author=${req.user?._id}`;
+    if (blog.length === 0) {
+        return res.status(404).json({ message: "Blog not found" });
+    }
+    if (blog[0].author !== req.user?._id) {
+        return res.status(403).json({ message: "You are not authorized to delete this blog" });
+    }
+    await sql `DELETE FROM blogs WHERE id=${id} AND author=${req.user?._id}`;
+    await sql `DELETE FROM comments WHERE blogid=${id}`;
+    await sql `DELETE FROM savedblogs WHERE blogid=${id}`;
+    return res.status(200).json({ message: "Blog deleted" });
+});
+export const getAllBlogs = TryCatch(async (req, res) => {
+    const blogs = await sql `SELECT * FROM blogs WHERE author=${req.user?._id}`;
+    return res.status(200).json({ message: "Blogs fetched", blogs });
+});
