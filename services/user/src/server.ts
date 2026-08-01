@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 import connectDb from "./utils/db.js";
 import userRoutes from "./routes/user.js";
 import { v2 as cloudinary } from "cloudinary";
+import cors from "cors";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -19,6 +20,7 @@ cloudinary.config({
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 connectDb();
 app.use("/api/v1", userRoutes);
 //console.log(process.env.MONGO_URI);
