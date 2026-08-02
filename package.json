@@ -1,0 +1,25 @@
+{
+  "name": "microservices-redis-cache-rabbit-mq-next",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GLab-cloud/Microservices-Redis-Cache-Rabbit-MQ-Next.js.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/GLab-cloud/Microservices-Redis-Cache-Rabbit-MQ-Next.js/issues"
+  },
+  "homepage": "https://github.com/GLab-cloud/Microservices-Redis-Cache-Rabbit-MQ-Next.js#readme",
+  "dependencies": {
+    "amqplib": "^2.0.1"
+  }
+}
