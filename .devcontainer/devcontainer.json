@@ -2,14 +2,14 @@
   "name": "Node.js Quick RabbitMQ",
   "image": "://microsoft.com",
   
-  // 1. Kích hoạt Docker bên trong Codespaces
+  // 1. activate docker in Codespaces
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {
       "version": "latest"
     }
   },
 
-  // 2. Chuyển tiếp cổng Web UI và Broker ra ngoài
+  // 2. forward Ports Web UI and Broker 
   "forwardPorts": [5672, 15672],
   "portsAttributes": {
     "15672": {
@@ -22,6 +22,6 @@
     }
   },
 
-  // 3. Tải RabbitMQ bản Alpine (Siêu nhẹ) ở chế độ nền khi đã vào Codespaces
+  // 3. download RabbitMQ - Alpine (Super lightweight) and run in background when opening Codespaces
   "postCreateCommand": "npm install && docker run -d --name rabbitmq-fast -p 5672:5672 -p 15672:15672 rabbitmq:3-management-alpine"
 }

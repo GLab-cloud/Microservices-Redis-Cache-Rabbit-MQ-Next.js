@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/GLab-cloud/Microservices-Redis-Cache-Rabbit-MQ-Next.js#readme",
   "dependencies": {
-    "amqplib": "^2.0.1"
+    "amqplib": "^2.0.1",
+    "opencode-ai": "^1.18.11"
   }
 }
