@@ -1,11 +1,11 @@
 import amqp from 'amqplib';
-let channel = null;
+let channel;
 export const connectToRabbitMQ = async () => {
     if (channel) {
         return channel;
     }
     try {
-        const connection = await amqp.connect({ protocol: 'amqp', hostname: 'localhost', port: 5672, username: 'guest', password: 'guest' });
+        const connection = await amqp.connect({ protocol: 'amqp', hostname: 'localhost', port: 5672, username: process.env.RABBITMQ_USERNAME, password: process.env.RABBITMQ_PASSWORD });
         channel = await connection.createChannel();
         console.log("🚀 RabbitMQ connected!");
         return channel;

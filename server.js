@@ -2,7 +2,9 @@ import amqp from 'amqplib';
 
 async function start() {
     try {
-        const connection = await amqp.connect('amqp://admin:admin123@localhost:5672');
+        const username = process.env.RABBITMQ_USERNAME || 'admin';
+        const password = process.env.RABBITMQ_PASSWORD || 'admin123';
+        const connection = await amqp.connect(`amqp://${username}:${password}@localhost:5672`);
         const channel = await connection.createChannel();
         
         console.log("🚀 RabbitMQ connected!");
