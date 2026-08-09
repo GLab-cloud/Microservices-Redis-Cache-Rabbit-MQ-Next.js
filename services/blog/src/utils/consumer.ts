@@ -47,7 +47,7 @@ export const startCacheInvalidationConsumer = async () => {
                     const category="";
                     const searchQuery="";
                     const cacheKey = `blogs:${searchQuery}:${category}`;
-                    const blogs=sql`SELECT * FROM blogs ORDER BY created_at DESC`;  
+                    const blogs=await sql`SELECT * FROM blogs ORDER BY created_at DESC`;  
                     await redisClient.set(cacheKey, JSON.stringify(blogs), {EX: 3600}); // Cache for 1 hour 
                     console.log(`✅ Cache rebuilt successfully for key: ${cacheKey}`);     
                     console.log(`✅ Blog service: cache invalidation completed for patterns: ${content.keys.join(', ')}`);
