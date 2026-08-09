@@ -2,9 +2,11 @@ import express from "express";
 import dotenv from "dotenv";
 import blogRoutes from "./routes/blog.js";
 import { createClient } from "redis";
+import { startCacheInvalidationConsumer } from "./utils/consumer.js";
 dotenv.config();
 const app = express();
 const port = process.env.PORT || 5002;
+await startCacheInvalidationConsumer();
 export const redisClient = createClient({
     url: process.env.REDIS_REST_URL,
 });

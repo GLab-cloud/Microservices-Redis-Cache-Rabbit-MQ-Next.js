@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import { v2 as cloudinary } from "cloudinary";
 import { sql } from "./utils/db.js";
 import blogRoutes from "./routes/blog.js";
+import { connectToRabbitMQ } from "./utils/rabbitmq.js";
 dotenv.config();
 // Configuration
 cloudinary.config({
@@ -14,8 +15,11 @@ const app = express();
 app.use("/api/v1", blogRoutes);
 
 const port = process.env.PORT;
-async function initDB(){
+
+async function initDB()
+{
   try{
+    await connectToRabbitMQ();
     await sql `CREATE TABLE IF NOT EXISTS blogs (
     id SERIAL PRIMARY KEY, 
     title VARCHAR(255) NOT NULL,    
@@ -51,4 +55,4 @@ async function initDB(){
 
 initDB().then(()=>{
     app.listen(port, () => {  console.log(`Server is running on http://localhost:${port}`);
-})});
+})}).catch((error)=>{ console.error("Server failed to start:", error); });
