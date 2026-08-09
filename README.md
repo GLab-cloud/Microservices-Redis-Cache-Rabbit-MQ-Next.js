@@ -4,7 +4,7 @@ A modern, scalable microservices architecture built with Node.js, Express, TypeS
 
 ## 📋 Project Overview
 
-This repository implements a distributed microservices system designed to handle blog management, user authentication, and author management with a focus on performance through caching and reliable message passing through RabbitMQ.
+This repository implements a distributed microservices system designed to handle blog management, user authentication, and author management with a focus on performance through caching and reliable message queuing.
 
 **Technology Stack:**
 - **Runtime**: Node.js with ES Modules
@@ -12,7 +12,7 @@ This repository implements a distributed microservices system designed to handle
 - **Framework**: Express.js
 - **Message Queue**: RabbitMQ (AMQP)
 - **Caching**: Redis
-- **Database**: Neon PostgreSQL (Serverless)
+- **Database**: Neon PostgreSQL (Serverless) & MongoDB
 - **Cloud Storage**: Cloudinary
 - **Authentication**: JWT (JSON Web Tokens)
 - **AI Integration**: Google Generative AI
@@ -72,6 +72,7 @@ services/
 - RabbitMQ server running (default: `localhost:5672`)
 - Redis instance running
 - Neon PostgreSQL account for serverless database
+- MongoDB instance (local or cloud)
 - Cloudinary account for image hosting
 - Google API credentials for AI services
 
@@ -112,6 +113,7 @@ Cloud_Name=<your_cloudinary_name>
 Cloud_Api_Key=<your_cloudinary_api_key>
 Cloud_Api_Secret=<your_cloudinary_api_secret>
 DATABASE_URL=<your_neon_postgresql_url>
+MONGODB_URI=<your_mongodb_connection_string>
 JWT_SECRET=<your_jwt_secret>
 GOOGLE_API_KEY=<your_google_api_key>
 ```
@@ -122,6 +124,7 @@ PORT=5002
 REDIS_REST_URL=<your_redis_url>
 JWT_SECRET=<your_jwt_secret>
 DATABASE_URL=<your_neon_postgresql_url>
+MONGODB_URI=<your_mongodb_connection_string>
 GOOGLE_API_KEY=<your_google_api_key>
 ```
 
@@ -129,6 +132,7 @@ GOOGLE_API_KEY=<your_google_api_key>
 ```env
 PORT=5003
 DATABASE_URL=<your_neon_postgresql_url>
+MONGODB_URI=<your_mongodb_connection_string>
 JWT_SECRET=<your_jwt_secret>
 ```
 
@@ -187,18 +191,200 @@ npm start
 
 ## 💾 Database Schema
 
-### Blog Service Tables
+### PostgreSQL (Neon)
+
+#### Blog Service Tables
 - `blogs` - Blog post content and metadata
 - `comments` - User comments on blogs
 - `savedblogs` - Bookmarked blogs by users
 
-### Author Service Tables
+#### Author Service Tables
 - Author profile information
 - Related blog data
 
-### User Service Tables
+#### User Service Tables
 - User credentials and profiles
 - User metadata
+
+### MongoDB Collections
+
+MongoDB serves as an additional data store for flexible schema operations and document-based persistence.
+
+#### Installation & Setup
+
+**Local MongoDB:**
+```bash
+# macOS with Homebrew
+brew tap mongodb/brew
+brew install mongodb-community
+
+# Or use Docker
+docker run -d --name mongodb -p 27017:27017 mongo:latest
+```
+
+**MongoDB Atlas (Cloud):**
+1. Create account at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
+2. Create a cluster
+3. Get connection string: `mongodb+srv://username:password@cluster.mongodb.net/dbname`
+
+#### Connection Configuration
+
+**Node.js/Express Setup:**
+```javascript
+import mongoose from 'mongoose';
+
+const connectMongoDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('MongoDB connected successfully');
+  } catch (error) {
+    console.error('MongoDB connection error:', error);
+    process.exit(1);
+  }
+};
+
+export default connectMongoDB;
+```
+
+#### MongoDB Schema Examples
+
+**User Schema (MongoDB):**
+```javascript
+const userSchema = new mongoose.Schema({
+  _id: mongoose.Schema.Types.ObjectId,
+  email: { type: String, required: true, unique: true },
+  username: String,
+  password: { type: String, required: true },
+  profile: {
+    firstName: String,
+    lastName: String,
+    avatar: String,
+  },
+  role: { type: String, default: 'user' },
+  preferences: {
+    notifications: Boolean,
+    theme: String,
+  },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
+});
+
+const User = mongoose.model('User', userSchema);
+```
+
+**Blog Schema (MongoDB):**
+```javascript
+const blogSchema = new mongoose.Schema({
+  _id: mongoose.Schema.Types.ObjectId,
+  title: { type: String, required: true },
+  content: { type: String, required: true },
+  author: { type: mongoose.Schema.Types.ObjectId, ref: 'Author' },
+  tags: [String],
+  category: String,
+  views: { type: Number, default: 0 },
+  likes: { type: Number, default: 0 },
+  status: { type: String, enum: ['draft', 'published'], default: 'draft' },
+  metadata: {
+    readTime: Number,
+    wordCount: Number,
+  },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
+});
+
+const Blog = mongoose.model('Blog', blogSchema);
+```
+
+**Author Schema (MongoDB):**
+```javascript
+const authorSchema = new mongoose.Schema({
+  _id: mongoose.Schema.Types.ObjectId,
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  bio: String,
+  avatar: String,
+  socialLinks: {
+    twitter: String,
+    linkedin: String,
+    github: String,
+  },
+  blogs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Blog' }],
+  followers: { type: Number, default: 0 },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
+});
+
+const Author = mongoose.model('Author', authorSchema);
+```
+
+#### MongoDB CRUD Operations
+
+**Create:**
+```javascript
+const newBlog = await Blog.create({
+  title: 'My First Blog',
+  content: 'Blog content here...',
+  author: authorId,
+  tags: ['tech', 'javascript'],
+});
+```
+
+**Read:**
+```javascript
+// Single document
+const blog = await Blog.findById(blogId);
+
+// Multiple documents
+const blogs = await Blog.find({ status: 'published' });
+
+// With aggregation
+const stats = await Blog.aggregate([
+  { $match: { author: authorId } },
+  { $group: { _id: '$category', count: { $sum: 1 } } },
+]);
+```
+
+**Update:**
+```javascript
+const updatedBlog = await Blog.findByIdAndUpdate(
+  blogId,
+  { 
+    title: 'Updated Title',
+    updatedAt: new Date(),
+  },
+  { new: true }
+);
+```
+
+**Delete:**
+```javascript
+await Blog.findByIdAndDelete(blogId);
+```
+
+**Populate Relations:**
+```javascript
+const blog = await Blog.findById(blogId).populate('author');
+```
+
+#### MongoDB Indexes
+
+```javascript
+// Create indexes for performance
+userSchema.index({ email: 1 });
+blogSchema.index({ author: 1 });
+blogSchema.index({ status: 1, createdAt: -1 });
+authorSchema.index({ email: 1 });
+```
+
+#### MongoDB Atlas Features
+
+- **Automated Backups**: Daily backups with point-in-time recovery
+- **Monitoring**: Real-time performance metrics and analytics
+- **Security**: IP whitelisting, encryption at rest, authentication
+- **Scaling**: Auto-scaling storage and performance optimization
 
 ## 🔄 Message Queue Architecture
 
@@ -230,6 +416,8 @@ The blog service implements a sophisticated caching layer:
 - **Environment Variables**: Sensitive data management
 - **Input Validation**: Multer for file upload validation
 - **Google Generative AI**: Secure API integration
+- **MongoDB Security**: Connection string encryption, IP whitelisting
+- **Database Encryption**: At-rest and in-transit encryption
 
 ## 📦 Dependencies
 
@@ -238,6 +426,8 @@ The blog service implements a sophisticated caching layer:
 - `amqplib`: RabbitMQ client
 - `redis`: Cache client
 - `@neondatabase/serverless`: PostgreSQL client
+- `mongoose`: MongoDB ODM
+- `mongodb`: MongoDB native driver
 
 ### Development
 - `typescript`: Type safety
@@ -285,7 +475,8 @@ The project includes `.devcontainer` configuration for consistent development en
 2. **Asynchronous Processing**: RabbitMQ enables non-blocking operations
 3. **Distributed Architecture**: Independent services can scale separately
 4. **Serverless Database**: Neon PostgreSQL scales with demand
-5. **CDN Integration**: Cloudinary for global image distribution
+5. **MongoDB Indexing**: Optimized queries with proper index strategy
+6. **CDN Integration**: Cloudinary for global image distribution
 
 ## 🚨 Error Handling
 
@@ -293,6 +484,7 @@ The project includes `.devcontainer` configuration for consistent development en
 - Console logging for debugging
 - Graceful shutdown on connection failures
 - Environment variable fallbacks
+- MongoDB connection error handling
 
 ## 📝 License
 
