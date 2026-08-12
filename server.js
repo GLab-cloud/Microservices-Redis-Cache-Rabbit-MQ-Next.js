@@ -2,14 +2,14 @@ import amqp from 'amqplib';
 
 async function start() {
     try {
-        const username = process.env.RABBITMQ_USERNAME || 'admin';
-        const password = process.env.RABBITMQ_PASSWORD || 'admin123';
+        const username = process.env.RABBITMQ_DEFAULT_USER ;
+        const password = process.env.RABBITMQ_DEFAULT_PASS ;
         const connection = await amqp.connect(`amqp://${username}:${password}@localhost:5672`);
         const channel = await connection.createChannel();
         
         console.log("🚀 RabbitMQ connected!");
         
-        const queueName = 'test_queue 1';
+        const queueName = 'test_queue 8';
         await channel.assertQueue(queueName, { durable: false });
         
         channel.sendToQueue(queueName, Buffer.from('Hello from GitHub Codespaces!'));
