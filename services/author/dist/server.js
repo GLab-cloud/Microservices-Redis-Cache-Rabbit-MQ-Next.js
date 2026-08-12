@@ -4,6 +4,7 @@ import { v2 as cloudinary } from "cloudinary";
 import { sql } from "./utils/db.js";
 import blogRoutes from "./routes/blog.js";
 import { connectToRabbitMQ } from "./utils/rabbitmq.js";
+import cors from "cors";
 dotenv.config();
 // Configuration
 cloudinary.config({
@@ -12,11 +13,13 @@ cloudinary.config({
     api_secret: process.env.Cloud_Api_Secret,
 });
 const app = express();
+app.use(express.json());
 app.use("/api/v1", blogRoutes);
+app.use(cors());
 const port = process.env.PORT;
+await connectToRabbitMQ();
 async function initDB() {
     try {
-        await connectToRabbitMQ();
         await sql `CREATE TABLE IF NOT EXISTS blogs (
     id SERIAL PRIMARY KEY, 
     title VARCHAR(255) NOT NULL,    

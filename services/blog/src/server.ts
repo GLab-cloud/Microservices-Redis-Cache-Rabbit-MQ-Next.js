@@ -3,8 +3,12 @@ import dotenv from "dotenv";
 import blogRoutes from "./routes/blog.js";
 import {createClient} from "redis"
 import { startCacheInvalidationConsumer } from "./utils/consumer.js";
+import cors from "cors";
+
 dotenv.config();
 const app = express(); 
+app.use(express.json());
+app.use(cors())
 const port = process.env.PORT || 5002;
 await startCacheInvalidationConsumer();
   
@@ -17,7 +21,6 @@ await redisClient.connect().then(() => {
     console.log("Redis connection error", err);
 });
 
-app.use(express.json());
 app.use('/api/v1', blogRoutes); 
 
 app.listen(port, () => {

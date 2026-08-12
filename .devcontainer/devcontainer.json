@@ -1,7 +1,13 @@
 {
   "name": "Node.js Quick RabbitMQ",
-  "image": "://microsoft.com",
-  
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:0-20",
+
+  // read RabbitMQ default credentials from the local environment
+  "containerEnv": {
+    "RABBITMQ_DEFAULT_USER": "${localEnv:RABBITMQ_DEFAULT_USER}",
+    "RABBITMQ_DEFAULT_PASS": "${localEnv:RABBITMQ_DEFAULT_PASS}"
+  },
+
   // 1. activate docker in Codespaces
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {
@@ -9,7 +15,7 @@
     }
   },
 
-  // 2. forward Ports Web UI and Broker 
+  // 2. forward Ports Web UI and Broker
   "forwardPorts": [5672, 15672],
   "portsAttributes": {
     "15672": {
@@ -23,5 +29,7 @@
   },
 
   // 3. download RabbitMQ - Alpine (Super lightweight) and run in background when opening Codespaces
-  "postCreateCommand": "npm install && docker run -d --name rabbitmq-fast -p 5672:5672 -p 15672:15672 rabbitmq:3-management-alpine"
+  //    --env-file reads credentials directly from the workspace's root .env,
+  //    so it works in Codespaces where ${localEnv:...} would be empty.
+  "postCreateCommand": "npm install && docker run -d --name rabbitmq-fast -p 5672:5672 -p 15672:15672 --env-file=.env rabbitmq:3-management-alpine"
 }

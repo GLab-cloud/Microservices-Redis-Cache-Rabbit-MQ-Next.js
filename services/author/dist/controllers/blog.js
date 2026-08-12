@@ -52,6 +52,7 @@ export const updateBlog = TryCatch(async (req, res) => {
         imageUrl = cloud.secure_url;
     }
     const updatedBlog = await sql `UPDATE blogs SET title=${title}, description=${description}, blogcontent=${blogcontent}, image=${imageUrl}, category=${category} WHERE id=${id} AND author=${req.user?._id} RETURNING *`;
+    await invalidateCacheJob(["blogs:*", `blogs:${id}`]);
     return res.status(200).json({ message: "Blog updated", blog: updatedBlog[0] });
 });
 export const deleteBlog = TryCatch(async (req, res) => {
@@ -66,6 +67,7 @@ export const deleteBlog = TryCatch(async (req, res) => {
     await sql `DELETE FROM blogs WHERE id=${id} AND author=${req.user?._id}`;
     await sql `DELETE FROM comments WHERE blogid=${id}`;
     await sql `DELETE FROM savedblogs WHERE blogid=${id}`;
+    await invalidateCacheJob(["blogs:*", `blogs:${id}`]);
     return res.status(200).json({ message: "Blog deleted" });
 });
 export const getAllBlogs = TryCatch(async (req, res) => {
