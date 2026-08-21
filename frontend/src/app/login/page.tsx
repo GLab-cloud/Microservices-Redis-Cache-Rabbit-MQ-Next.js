@@ -1,6 +1,4 @@
-import React from 'react'
-
-const LoginPage  = () => {
+const LoginPage = () => {
   return (
     <div>Login Page</div>
   )
