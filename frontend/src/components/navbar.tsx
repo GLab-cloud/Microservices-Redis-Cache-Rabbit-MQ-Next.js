@@ -26,7 +26,7 @@ const Navbar = () => {
         </ul>
       </div>
       <div className={cn("md:hidden overflow-hidden transition-all duration-300 ease-in-out", isOpen ? "max-h-40 opacity-100" : "max-h-0 opacity-0")}>
-      <ul className="flex flex-col items-center space-y-4 text-gray-700 mt-4">
+      <ul className="flex flex-col items-center space-y-4 text-gray-700 p-4 bg-white shadow-md">
         <li><Link href={"/"} className="text-gray-600 hover:text-blue-500" onClick={() => setIsOpen(false)}>Home</Link></li>
         <li><Link href={"/blog/saved"} className="text-gray-600 hover:text-blue-500" onClick={() => setIsOpen(false)}>Saved Blog</Link></li>
         <li><Link href={"/login"} className="text-gray-600 hover:text-blue-500" onClick={() => setIsOpen(false)}><LogIn/></Link></li>
