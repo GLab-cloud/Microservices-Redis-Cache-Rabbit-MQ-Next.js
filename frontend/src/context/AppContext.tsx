@@ -13,12 +13,12 @@ import toast, { Toaster } from "react-hot-toast";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { get } from "http";
 
-export const user_service = "/api/user";
-export const author_service = "/api/author";
-export const blog_service = "/api/blog";
+export const user_service = "http://localhost:5000/api/v1";
+export const author_service = "http://localhost:5001/api/v1";
+export const blog_service = "http://localhost:5002/api/v1";
 
 export const blogCategories = [
-  "Techonlogy",
+  "Technology",
   "Health",
   "Finance",
   "Travel",
@@ -103,6 +103,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       setLoading(false);
     }
   }
+  
 
   const [blogLoading, setBlogLoading] = useState(true);
 

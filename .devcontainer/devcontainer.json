@@ -16,7 +16,7 @@
   },
 
   // 2. forward Ports Web UI and Broker
-  "forwardPorts": [5672, 15672, 3000, 5000, 5001, 5002],
+  "forwardPorts": [5672, 15672, 6379, 3000, 5000, 5001, 5002],
   "portsAttributes": {
     "3000": {
       "label": "Frontend (Next.js)",
@@ -29,9 +29,13 @@
     "5672": {
       "label": "RabbitMQ Broker",
       "onAutoForward": "silent"
+    },
+    "6379": {
+      "label": "Redis Cache",
+      "onAutoForward": "notify"
     }
   },
 
-  // 3. download RabbitMQ and start all 4 apps every time the Codespaces opens
-  "postStartCommand": "bash -ic ./.devcontainer/start-dev.sh"
+  "postCreateCommand": "docker pull rabbitmq:3-management-alpine & docker pull redis:7-alpine & wait",
+  "postStartCommand": "bash ./.devcontainer/start-dev.sh"
 }
