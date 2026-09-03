@@ -18,6 +18,11 @@
   // 2. forward Ports Web UI and Broker
   "forwardPorts": [5672, 15672, 6379, 3000, 5000, 5001, 5002],
   "portsAttributes": {
+    "5000": {
+      "label": "Backend API Port",
+      "onAutoForward": "openBrowser",
+      "visibility": "public"
+    },
     "3000": {
       "label": "Frontend (Next.js)",
       "onAutoForward": "notify"

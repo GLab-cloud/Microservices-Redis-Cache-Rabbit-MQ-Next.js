@@ -7,10 +7,7 @@ import userRoutes from "./routes/user.js";
 import { v2 as cloudinary } from "cloudinary";
 import cors from "cors";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-dotenv.config({ path: path.resolve(__dirname, "../.env") });
+dotenv.config();
 // Configuration
 cloudinary.config({
   cloud_name: process.env.Cloud_Name,
@@ -20,11 +17,12 @@ cloudinary.config({
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+console.log(">>> FRONTEND_URL:", process.env.FRONTEND_URL);
+app.use(cors({origin: process.env.FRONTEND_URL, credentials: true}));
 connectDb();
 app.use("/api/v1", userRoutes);
 //console.log(process.env.MONGO_URI);
 const port = process.env.PORT;
-app.listen(port, () => {
+app.listen(port, '0.0.0.0',() => {
   console.log(`Server is running on http://localhost:${port}`);
 });

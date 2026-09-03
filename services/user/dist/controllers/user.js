@@ -6,14 +6,19 @@ import { v2 as cloudinary } from "cloudinary";
 import { oauth2Client } from "../utils/GoogleConfig.js";
 import axios from "axios";
 export const loginUser = TryCatch(async (req, res) => {
+    // Log thử xem request đã thực sự chạm đến Backend chưa
+    console.log(">>> Đã nhận request đăng nhập với token:");
     const { code } = req.body;
     if (!code) {
         res.status(400).json({ message: "Authorization Code is required" });
         return;
     }
+    console.log("Authorization Code:", code);
     const googleRes = await oauth2Client.getToken(code);
+    console.log("Google Token Response:", googleRes.tokens);
     oauth2Client.setCredentials(googleRes.tokens);
     const userRes = await axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${googleRes.tokens.access_token}`);
+    console.log("User Info:", userRes.data);
     const { email, name, picture } = userRes.data;
     let user = await User.findOne({ email });
     if (!user) {
