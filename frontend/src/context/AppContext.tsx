@@ -13,9 +13,9 @@ import toast, { Toaster } from "react-hot-toast";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { get } from "http";
 
-export const user_service = "/api/user";
-export const author_service = "/api/author";
-export const blog_service = "/api/blog";
+export const user_service = "https://didactic-memory-5rg959677q624qvx-5000.app.github.dev/api/v1";
+export const author_service = "https://didactic-memory-5rg959677q624qvx-5001.app.github.dev/api/v1";
+export const blog_service = "https://didactic-memory-5rg959677q624qvx-5002.app.github.dev/api/v1";
 
 export const blogCategories = [
   "Technology",
@@ -98,8 +98,9 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       setUser(data);
       setIsAuth(true);
       setLoading(false);
+      console.log("User fetched successfully:", data);
     } catch (error) {
-      console.log(error);
+      console.log("Error fetching user:", error);
       setLoading(false);
     }
   }
@@ -119,6 +120,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       );
 
       setBlogs(data);
+      console.log("Blogs fetched successfully:", data);
     } catch (error) {
       console.log(error);
     } finally {
@@ -140,6 +142,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         }
       );
       setSavedBlogs(data);
+      console.log("Saved blogs fetched successfully:", data);
     } catch (error) {
       console.log(error);
     }
