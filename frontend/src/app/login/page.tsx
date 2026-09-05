@@ -13,9 +13,16 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 import {useGoogleLogin} from '@react-oauth/google';
+import { useAppData } from "@/context/AppContext";
+import { redirect } from "next/navigation";
 
 
 const LoginPage = () => { 
+const {isAuth, user, setIsAuth, setLoading} = useAppData();
+   if(isAuth){
+    // window.location.href = "/dashboard";
+    return redirect("/");
+   }
   const responseGoogle = async (authResult: any) => {
     // Implementation for Google login
     try {
