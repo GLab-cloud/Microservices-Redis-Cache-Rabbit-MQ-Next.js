@@ -99,12 +99,15 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       setIsAuth(true);
       setLoading(false);
       console.log("User fetched successfully:", data);
+      console.log("isAuth:", isAuth);
     } catch (error) {
       console.log("Error fetching user:", error);
       setLoading(false);
     }
   }
-  
+  useEffect(() => {
+  console.log("isAuth changed:", isAuth);
+}, [isAuth]);
 
   const [blogLoading, setBlogLoading] = useState(true);
 

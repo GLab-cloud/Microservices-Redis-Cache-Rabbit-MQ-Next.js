@@ -2,12 +2,14 @@
 import Link from "next/link"
 import React, { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Menu, X } from "lucide-react"
+import { CircleUserRoundIcon, Menu, X } from "lucide-react"
 import { LogIn } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useAppData } from "@/context/AppContext"
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
+  const{loading,isAuth} = useAppData();
   return (
     <nav className="bg-white shadow-md p-4 z-50">
       <div className="container mx-auto flex items-center justify-between">
@@ -29,7 +31,15 @@ const Navbar = () => {
       <ul className="flex flex-col items-center space-y-4 text-gray-700 p-4 bg-white shadow-md">
         <li><Link href={"/"} className="text-gray-600 hover:text-blue-500" onClick={() => setIsOpen(false)}>Home</Link></li>
         <li><Link href={"/blog/saved"} className="text-gray-600 hover:text-blue-500" onClick={() => setIsOpen(false)}>Saved Blog</Link></li>
-        <li><Link href={"/login"} className="text-gray-600 hover:text-blue-500" onClick={() => setIsOpen(false)}><LogIn/></Link></li>
+          {loading ? (""):(<li>{ isAuth ? (
+            <Link href={"/profile"} className="hover:text-blue-500" onClick={() => setIsOpen(false)}>
+              <CircleUserRoundIcon />
+            </Link>
+          ) : (
+            <Link href={"/login"} className="hover:text-blue-500" onClick={() => setIsOpen(false)}>
+              <LogIn />
+            </Link>
+          )} </li>)}
       </ul>
       </div>
     </nav>
