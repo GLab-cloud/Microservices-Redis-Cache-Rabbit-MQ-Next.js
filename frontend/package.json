@@ -22,6 +22,7 @@
     "axios": "^1.9.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "cn": "^0.2.6",
     "jodit-react": "^5.2.19",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.503.0",
