@@ -15,10 +15,11 @@ import toast from "react-hot-toast";
 import {useGoogleLogin} from '@react-oauth/google';
 import { useAppData } from "@/context/AppContext";
 import { redirect } from "next/navigation";
+import Loading from "@/components/loading";
 
 
 const LoginPage = () => { 
-const {isAuth, user, setIsAuth, setLoading} = useAppData();
+const {isAuth, user, setIsAuth, loading, setLoading} = useAppData();
    if(isAuth){
     // window.location.href = "/dashboard";
     return redirect("/");
@@ -46,7 +47,12 @@ const {isAuth, user, setIsAuth, setLoading} = useAppData();
     flow: 'auth-code',
   });
     return (
-    <div className="w-87.5 m-auto mt-10">
+   <> 
+   {loading? 
+   (
+   <Loading />
+   )
+   :(<div className="w-87.5 m-auto mt-10">
       <Card className="w-87.5">
       <CardHeader>
         <CardTitle className="text-2xl">Login to The Reading Retreat</CardTitle>
@@ -68,7 +74,8 @@ const {isAuth, user, setIsAuth, setLoading} = useAppData();
         </Button>
       </CardFooter>
     </Card>
-    </div>
+    </div>)}
+     </>
   )
 }
 
